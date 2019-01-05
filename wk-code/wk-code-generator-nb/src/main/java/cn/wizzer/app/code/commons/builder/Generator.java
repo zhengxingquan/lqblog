@@ -6,7 +6,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.json.JsonLoader;
-import org.nutz.lang.*;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 

@@ -10,7 +10,6 @@ import com.intellij.ui.components.panels.HorizontalBox;
 import com.intellij.ui.components.panels.VerticalBox;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

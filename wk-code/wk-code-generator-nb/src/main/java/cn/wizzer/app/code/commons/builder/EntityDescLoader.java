@@ -1,6 +1,5 @@
 package cn.wizzer.app.code.commons.builder;
 
-import org.nutz.dao.entity.annotation.*;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Files;
 import org.nutz.lang.Mirror;
