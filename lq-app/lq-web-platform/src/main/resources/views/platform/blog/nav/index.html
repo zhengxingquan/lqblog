@@ -1,0 +1,244 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+        <form class="form-inline" id="updateBlogForm" action="${base}/platform/blog/nav/edit" method="post"
+              style="display: none;">
+            <input type="hidden" id="uuid" name="uuid" value="">
+            <input type="submit" id="updateBtn" hidden class="btn btn-primary" value="提交">
+        </form>
+        <form class="form-inline" onsubmit="return false;">
+            <div class="btn-group tool-button">
+                <a id="add" class="btn btn-primary navbar-btn" href="${base}/platform/blog/nav/add" data-pjax><i
+                        class="ti-plus"></i> 新建轮播图片</a>
+                <button class="btn btn-danger navbar-btn" onclick="delCheck()"><i class="ti-close"></i>删除选中</button>
+            </div>
+        </form>
+    </header>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                <tr>
+                    <th>轮播图片</th>
+                    <th>轮播文字说明</th>
+                    <th>是否显示</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+            </table>
+        </div>
+    </div>
+</section>
+<!-- 删除用户 -->
+<div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除轮播图片</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        轮播图片删除后无法恢复，确定删除吗？ <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="okDel" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 删除轮播图片 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除轮播图片</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        轮播图片删除后无法恢复，确定删除已选轮播图片吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching": false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/assets/plugins/datatables/cn.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/blog/nav/data",
+                "type": "post",
+            },
+            "columns": [
+                {"data": "filePath"},
+                {"data": "content"},
+                {"data": "show",},
+                {"data": "opAt",bSortable:true},
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row) {
+
+                        var html = [];
+                        html.push('<div class="btn-group">');
+                        html.push('<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">');
+                        html.push('<i class="ti-settings"></i> ');
+                        html.push('<span class="ti-angle-down"></span></button> ');
+                        html.push('<ul class="dropdown-menu" role="menu">');
+                        html.push('<li><a href="javascript:;" onclick="editNav(\'' + row.id + '\')">修改</a></li> ');
+                        html.push('<li class="divider"></li>');
+                        html.push('<li><a href="javascript:;" onclick="delOneNav(\'' + row.id + '\')">删除</a></li>');
+                        html.push('<li class="divider"></li>');
+                        html.push('<li><a href="javascript:;" onclick="disableNav(\'' + row.id + '\')">不显示</a></li>');
+                        html.push('<li><a href="javascript:;" onclick="enableNav(\'' + row.id + '\')">显示</a></li>');
+                        html.push('</ul></div>');
+                        return html.join("")
+                    },
+                    "targets": 4
+                },
+                {
+                    "render": function (data, type, row) {
+                        if (data) {
+                            return '<i id="disable_' + row.id + '" class="fa fa-circle text-success ml5"></i>';
+                        } else {
+                            return '<i id="disable_' + row.id + '" class="fa fa-circle text-danger ml5"></i>';
+                        }
+                    },
+                    "targets": 2
+                },
+                {
+                    "render": function (data, type, row) {
+                       return "<img src='@src' width='30px' height='30px'/>".replace(/@src/ig , data)
+                    },
+                    "targets": 0
+                },
+                {
+                    "render": function (val, type, row) {
+                        if (val > 0)
+                            return moment(val * 1000).format("YYYY-MM-DD HH:mm");
+                        return "";
+                    },
+                    "targets": 3
+                }
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+    var selected = [];
+    function delOneNav(id) {
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/blog/nav/delete/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null, false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                //重置按钮状态，关闭提示框
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+    function delCheck() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(chks, function (i, n) {
+                ids.push(n.id);
+            });
+            var dialog = $("#dialogDeleteCheck");
+            dialog.modal("show");
+            dialog.find("#ok").unbind("click");
+            dialog.find("#ok").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+                $.post("${base}/platform/blog/nav/delete", {ids: ids.toString()}, function (data) {
+                    if (data.code == 0) {
+                        datatable.ajax.reload(null, false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            });
+        } else {
+            Toast.warning("请先选择要删除的轮播图片！");
+        }
+    }
+    function enableNav(id) {
+        $.post("${base}/platform/blog/nav/enable/" + id, {}, function (data) {
+            if (data.code == 0) {
+                $("#disable_" + id).attr("class", "fa fa-circle text-success ml5");
+            } else {
+                Toast.error(data.msg);
+            }
+        }, "json");
+    }
+    function disableNav(id) {
+        $.post("${base}/platform/blog/nav/disable/" + id, {}, function (data) {
+            if (data.code == 0) {
+                $("#disable_" + id).attr("class", "fa fa-circle text-danger ml5");
+            } else {
+                Toast.error(data.msg);
+            }
+        }, "json");
+    }
+
+    function editNav(id) {
+        var updateBlogForm = $("#updateBlogForm");
+        $("#uuid").val(id);
+        updateBlogForm.find("#updateBtn").trigger("click");
+    }
+
+    $(document).ready(function () {
+        initDatatable();
+        $("#dialogUserDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+
+</script>
+<%}%>

@@ -1,0 +1,205 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<script language="JavaScript" type="text/javascript" src="${base}/assets/plugins/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" charset="utf-8" src="${base!}/assets/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="${base!}/assets/plugins/ueditor/ueditor.all.min.js"> </script>
+<!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+<!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+<script type="text/javascript" charset="utf-8" src="${base!}/assets/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/blog/article" id="goback" data-pjax>
+            <i class="ti-angle-left"></i>返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form" style="padding-top:0px">
+            <form id="blogEditForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/blog/article/editDo" method="post">
+                <input type="hidden" name="id" value="${article.id!}">
+                <input type="hidden" name="delFlag" value="${article.delFlag!}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+                            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">文章内容</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="home" style="padding-top: 10px">
+                                <div class="form-group">
+                                    <label for="show" class="col-sm-2 control-label">所属分类</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <input type="hidden" name="partId" value="<%if(!isEmpty(article.part)){%>${article.part.id}<%}%>" >
+                                            <input id="partId" value="<%if(!isEmpty(article.part)){%>${article.part.name}<%}%>" type="text" class="form-control" placeholder="所属分类" disabled data-parsley-required="true"/>
+                                            <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                                data-target="#dialogSelect">
+                                                            <i class="ti-plus"></i> 选择
+                                                        </button>
+                                                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="show" class="col-sm-2 control-label">文章标题</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="name" value="${article.name}" class="form-control" data-parsley-required="true" name="name" placeholder="文章标题"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="top" class="col-sm-2 control-label">是否置顶</label>
+                                    <div class="col-sm-8 switcha">
+                                        <div class="mr15">
+                                            <input type="checkbox"  id="top" name="top" class="js-switch-blue" <%if(article.top){%>checked<%}%> />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="recommend" class="col-sm-2 control-label">是否推荐</label>
+                                    <div class="col-sm-8 switcha">
+                                        <div class="mr15">
+                                            <input type="checkbox" id="recommend" name="recommend" class="js-switch-blue" <%if(article.recommend){%>checked<%}%> >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="show" class="col-sm-2 control-label">是否发布</label>
+                                    <div class="col-sm-8 switcha">
+                                        <div class="mr15">
+                                            <input type="checkbox" id="show" name="show" class="js-switch-blue" <%if(article.show){%>checked<%}%> />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="startTime" class="col-sm-2 control-label">发布时间</label>
+                                    <div class="col-sm-8 date form_datetime"  data-date-format="dd MM yyyy" data-link-field="startTime">
+                                        <input class="form-control" type='text' id="startTime" name='startTime' data-parsley-required="true"
+                                               placeholder="发布时间" value='${@date.getDate(article.pubTime , "yyyy-MM-dd HH:mm:ss")}'
+                                               onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="show" class="col-sm-2 control-label">图标</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="icon" class="form-control" name="icon" value="${article.icon}" placeholder="图标"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="show" class="col-sm-2 control-label">文章简介</label>
+                                    <div class="col-sm-8">
+                                        <textarea type="text" id="description"  class="form-control textarea98" name="description" placeholder="文章简介">${article.description}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="profile" style="padding-top: 10px">
+                                <div class="form-group">
+                                    <label for="contentUe" class="col-sm-2 control-label">文章内容</label>
+                                    <div class="col-sm-8">
+                                        <textarea id="contentUe" name="content">${article.content}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<div id="dialogSelect" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">选择文章所属分类</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="jsTree" class="demo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                <button type="button" class="btn btn-primary" onclick="select()">确认选择</button>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="exit-offscreen"></a>
+<script language="JavaScript">
+
+    var ue;
+    //选择父菜单
+    function select() {
+        var tree = $.jstree.reference("#jsTree");
+        var node = tree.get_selected(true);
+        $("#blogEditForm #partId").val(node[0].text);
+        $("#blogEditForm input[name='partId']").val(node[0].id);
+        $("#dialogSelect").modal("hide");
+    }
+
+    function initTreeView() {
+        $("#jsTree").jstree({
+            plugins: ["wholerow", "json_data"],
+            core: {
+                data: {
+                    dataType: "json",
+                    url: function (node) {
+                        return node.id === "#" ? "${base}/platform/blog/category/tree" : "${base}/platform/blog/category/tree/?pid=" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            select();
+        });
+    }
+
+    $(document).ready(function () {
+        setTimeout(function () {
+            ue= new baidu.editor.ui.Editor({
+                elementPathEnabled:0,
+                wordCount:0,
+                initialFrameHeight:300,
+            });
+            ue.render('contentUe');
+        },500);
+        myForm.init();
+        initTreeView();
+        $('#blogEditForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goback").trigger("click");
+                    }, 500);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>

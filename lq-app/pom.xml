@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>app-parent</artifactId>
+        <groupId>cn.demo</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>lq-common</module>
+        <module>lq-model</module>
+        <module>lq-task</module>
+        <module>lq-service-sys</module>
+        <module>lq-service-wx</module>
+        <module>lq-service-cms</module>
+        <module>lq-service-blog</module>
+        <module>lq-web-platform</module>
+    </modules>
+
+    <groupId>cn.demo.app</groupId>
+    <artifactId>lq-app</artifactId>
+
+
+
+</project>
