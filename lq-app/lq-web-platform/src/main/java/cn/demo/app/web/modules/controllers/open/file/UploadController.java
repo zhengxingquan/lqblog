@@ -25,6 +25,7 @@ import java.util.Date;
 @IocBean
 @At("/open/file/upload")
 public class UploadController {
+
     private static final Log log = Logs.get();
 
     @AdaptBy(type = UploadAdaptor.class, args = {"ioc:fileUpload"})
@@ -33,24 +34,24 @@ public class UploadController {
     @Ok("json")
     @RequiresAuthentication
     //AdaptorErrorContext必须是最后一个参数
-    public Object file(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
+    public Result file(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
         try {
             if (err != null && err.getAdaptorErr() != null) {
-                return NutMap.NEW().addv("code", 1).addv("msg", "文件不合法");
+                return  Result.error("file.error");
             } else if (tf == null) {
-                return Result.error("空文件");
+                return Result.error("file.empty");
             } else {
                 String s = tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf(".") + 1);
                 String uri = "/file/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + R.UU32() + tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf("."));
                 String f = Globals.AppUploadPath + uri;
                 Files.write(new File(f), tf.getInputStream());
-                return Result.success("上传成功", NutMap.NEW().addv("file_type", s.toLowerCase()).addv("file_name", tf.getName()).addv("file_size", tf.getSize()).addv("file_url", Globals.AppUploadBase + uri));
+                return Result.success("file.upload.success", NutMap.NEW().addv("file_type", s.toLowerCase()).addv("file_name", tf.getName()).addv("file_size", tf.getSize()).addv("file_url", Globals.AppUploadBase + uri));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return Result.error("系统错误");
+            return Result.error("system.option.error");
         } catch (Throwable e) {
-            return Result.error("文件格式错误");
+            return Result.error("file.format.error");
         }
     }
 
@@ -60,24 +61,24 @@ public class UploadController {
     @Ok("json")
     @RequiresAuthentication
     //AdaptorErrorContext必须是最后一个参数
-    public Object video(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
+    public Result video(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
         try {
             if (err != null && err.getAdaptorErr() != null) {
-                return NutMap.NEW().addv("code", 1).addv("msg", "文件不合法");
+                return Result.error("file.error");
             } else if (tf == null) {
-                return Result.error("空文件");
+                return Result.error("file.empty");
             } else {
                 String s = tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf(".") + 1);
                 String uri = "/video/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + R.UU32() + tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf("."));
                 String f = Globals.AppUploadPath + uri;
                 Files.write(new File(f), tf.getInputStream());
-                return Result.success("上传成功", NutMap.NEW().addv("file_type", s.toLowerCase()).addv("file_name", tf.getName()).addv("file_size", tf.getSize()).addv("file_url", Globals.AppUploadBase + uri));
+                return Result.success("file.upload.success", NutMap.NEW().addv("file_type", s.toLowerCase()).addv("file_name", tf.getName()).addv("file_size", tf.getSize()).addv("file_url", Globals.AppUploadBase + uri));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return Result.error("系统错误");
+            return Result.error("system.option.error");
         } catch (Throwable e) {
-            return Result.error("文件格式错误");
+            return Result.error("file.video.format.error");
         }
     }
 
@@ -87,23 +88,23 @@ public class UploadController {
     @Ok("json")
     @RequiresAuthentication
     //AdaptorErrorContext必须是最后一个参数
-    public Object image(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
+    public Result image(@Param("Filedata") TempFile tf, HttpServletRequest req, AdaptorErrorContext err) {
         try {
             if (err != null && err.getAdaptorErr() != null) {
-                return NutMap.NEW().addv("code", 1).addv("msg", "文件不合法");
+                return Result.error("file.error");
             } else if (tf == null) {
-                return Result.error("空文件");
+                return Result.error("file.empty");
             } else {
                 String uri = "/image/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + R.UU32() + tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf("."));
                 String f = Globals.AppUploadPath + uri;
                 Files.write(new File(f), tf.getInputStream());
-                return Result.success("上传成功", Globals.AppUploadBase + uri);
+                return Result.success("file.upload.success", Globals.AppUploadBase + uri);
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return Result.error("系统错误");
+            return Result.error("system.option.error");
         } catch (Throwable e) {
-            return Result.error("图片格式错误");
+            return Result.error("file.image.format.empty");
         }
     }
 }

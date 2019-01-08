@@ -53,6 +53,7 @@ public class SLogAopInterceptor implements MethodInterceptor {
         this.async = slog.async();
     }
 
+    @Override
     public void filter(InterceptorChain chain) throws Throwable {
         try {
             chain.doChain();
@@ -64,8 +65,9 @@ public class SLogAopInterceptor implements MethodInterceptor {
     }
 
     protected void doLog(String t, CharSegment seg, InterceptorChain chain, Throwable e) {
-        if (sLogService == null)
+        if (sLogService == null){
             sLogService = ioc.get(SLogService.class);
+        }
         try {
             sLogService.log(t,
                     type,

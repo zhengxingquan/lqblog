@@ -37,7 +37,7 @@ public class SLogService implements Runnable {
 
     private static final Log log = Logs.get();
 
-    ExecutorService es;
+    private ExecutorService es;
 
     LinkedBlockingQueue<Sys_log> queue;
 
@@ -52,14 +52,16 @@ public class SLogService implements Runnable {
      */
     public void async(Sys_log syslog) {
         LinkedBlockingQueue<Sys_log> queue = this.queue;
-        if (queue != null)
+        if (queue != null) {
             try {
+                // 添加元素
                 boolean re = queue.offer(syslog, 50, TimeUnit.MILLISECONDS);
                 if (!re) {
                     log.info("syslog queue is full, drop it ...");
                 }
             } catch (InterruptedException e) {
             }
+        }
     }
 
     /**
@@ -75,12 +77,13 @@ public class SLogService implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         while (true) {
             LinkedBlockingQueue<Sys_log> queue = this.queue;
-            if (queue == null)
-                break;
+            if (queue == null) break;
             try {
+                // 获取数据
                 Sys_log sysLog = queue.poll(1, TimeUnit.SECONDS);
                 if (sysLog != null) {
                     sync(sysLog);
@@ -176,10 +179,8 @@ public class SLogService implements Runnable {
 
     public void log(String type, String tag, String source, String msg, boolean async, String param, String result) {
         Sys_log slog = makeLog(type, tag, source, msg, param, result);
-        if (async)
-            async(slog);
-        else
-            sync(slog);
+        if (async){ async(slog);}
+        else { sync(slog);}
     }
 
     protected static Map<String, Map<String, List<String>>> caches = new HashMap<String, Map<String, List<String>>>();

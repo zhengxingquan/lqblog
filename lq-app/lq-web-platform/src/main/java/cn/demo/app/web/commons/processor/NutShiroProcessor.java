@@ -34,8 +34,10 @@ public class NutShiroProcessor extends AbstractProcessor {
 
     @Override
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
-        if (init) // 禁止重复初始化,常见于ioc注入且使用了单例
+        // 禁止重复初始化,常见于ioc注入且使用了单例
+        if (init) {
             throw new IllegalStateException("this Processor have bean inited!!");
+        }
         super.init(config, ai);
         match = NutShiro.match(ai.getMethod());
         init = true;

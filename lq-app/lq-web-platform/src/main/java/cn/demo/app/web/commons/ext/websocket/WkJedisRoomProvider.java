@@ -19,12 +19,14 @@ public class WkJedisRoomProvider implements WsRoomProvider {
         this.jedisAgent = jedisAgent;
     }
 
+    @Override
     public Set<String> wsids(String room) {
         try (Jedis jedis = jedisAgent.getResource()) {
             return jedis.smembers(room);
         }
     }
 
+    @Override
     public void join(String room, String wsid) {
         try (Jedis jedis = jedisAgent.getResource()) {
             jedis.sadd(room, wsid);
@@ -32,6 +34,7 @@ public class WkJedisRoomProvider implements WsRoomProvider {
         }
     }
 
+    @Override
     public void left(String room, String wsid) {
         try (Jedis jedis = jedisAgent.getResource()) {
             //jedis.srem(room, wsid);

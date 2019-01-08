@@ -12,6 +12,9 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.impl.processor.ViewProcessor;
 import org.nutz.mvc.view.ForwardView;
 
+/**
+ * 视图 处理器
+ */
 public class WkFailProcessor extends ViewProcessor {
 
     private static final Log log = Logs.get();
@@ -22,6 +25,7 @@ public class WkFailProcessor extends ViewProcessor {
         view = evalView(config, ai, ai.getFailView());
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         if (log.isWarnEnabled()) {
             String uri = Mvcs.getRequestPath(ac.getRequest());

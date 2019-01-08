@@ -10,6 +10,7 @@ import org.nutz.lang.Strings;
  */
 public class Html2TxtFormat implements Format {
 
+    @Override
     public Object format(Object data, String pattern) {
         if (data == null) {
             return "";

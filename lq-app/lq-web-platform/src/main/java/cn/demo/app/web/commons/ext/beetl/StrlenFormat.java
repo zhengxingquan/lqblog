@@ -8,6 +8,7 @@ import org.nutz.lang.Strings;
  */
 public class StrlenFormat implements Format {
 
+    @Override
     public Object format(Object data, String pattern) {
         if (data == null) {
             return "";

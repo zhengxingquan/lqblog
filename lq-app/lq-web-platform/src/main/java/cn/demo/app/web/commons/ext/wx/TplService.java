@@ -64,7 +64,9 @@ public class TplService {
             l.setContent(Json.toJson(data));
             if (wxResp.errcode() == 0) {
                 l.setStatus(1);//发送成功
-            } else l.setStatus(2);//发送失败
+            } else {
+                l.setStatus(2);//发送失败
+            }
             Wx_tpl_log rl = wxTplLogService.insert(l);
             return rl == null ? null : rl.getId();
         }

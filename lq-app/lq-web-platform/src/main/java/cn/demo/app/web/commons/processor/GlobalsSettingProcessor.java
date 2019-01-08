@@ -15,6 +15,7 @@ import org.nutz.mvc.impl.processor.AbstractProcessor;
  * Created by wizzer on 2016/6/22.
  */
 public class GlobalsSettingProcessor extends AbstractProcessor {
+
     private ShiroUtil shiroUtil;
     private DateUtil dateUtil;
     private StringUtil stringUtil;

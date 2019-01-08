@@ -58,6 +58,7 @@ public class WxHandler extends AbstractWxHandler {
     @Inject
     private WxService wxService;
 
+    @Override
     public boolean check(String signature, String timestamp, String nonce, String key) {
         Wx_config appInfo = wxConfigService.fetch(Cnd.where("id", "=", key));
         if(appInfo!=null){
@@ -69,6 +70,7 @@ public class WxHandler extends AbstractWxHandler {
         return false;
     }
 
+    @Override
     public WXBizMsgCrypt getMsgCrypt() {
         if (this.msgCrypt == null) {
             try {
@@ -83,6 +85,7 @@ public class WxHandler extends AbstractWxHandler {
     }
 
     // 用户发送的是文本的时候调用这个方法
+    @Override
     public WxOutMsg text(WxInMsg msg) {
         Wx_reply reply = wxReplyService.fetch(Cnd.where("wxid", "=", msg.getExtkey()).and("type", "=", "keyword").and("keyword", "=", msg.getContent()));
         if (reply != null) {
@@ -117,6 +120,7 @@ public class WxHandler extends AbstractWxHandler {
         return Wxs.respText(null, "您的留言已收到！");
     }
 
+    @Override
     public WxOutMsg eventClick(WxInMsg msg) {
         String eventKey = msg.getEventKey();
         log.debug("eventKey: " + eventKey);

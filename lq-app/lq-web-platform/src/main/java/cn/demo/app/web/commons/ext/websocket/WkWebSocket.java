@@ -28,6 +28,7 @@ public class WkWebSocket extends AbstractWsEndpoint implements PubSub {
     @Inject("refer:$ioc")
     protected Ioc ioc;
 
+    @Override
     public WsHandler createHandler(Session session, EndpointConfig config) {
         return ioc.get(WkWsHandler.class);
     }
@@ -51,9 +52,11 @@ public class WkWebSocket extends AbstractWsEndpoint implements PubSub {
     }
 
 
+    @Override
     public void onMessage(String channel, String message) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("GET PubSub channel=%s msg=%s", channel, message);
+        }
         each(channel, (index, session, length) -> session.getAsyncRemote().sendText(message));
     }
 }
