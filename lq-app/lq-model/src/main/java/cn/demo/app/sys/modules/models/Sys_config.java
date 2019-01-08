@@ -28,23 +28,26 @@ public class Sys_config extends BaseModel implements Serializable {
         return configKey;
     }
 
-    public void setConfigKey(String configKey) {
+    public Sys_config setConfigKey(String configKey) {
         this.configKey = configKey;
+        return  this;
     }
 
     public String getConfigValue() {
         return configValue;
     }
 
-    public void setConfigValue(String configValue) {
+    public Sys_config setConfigValue(String configValue) {
         this.configValue = configValue;
+        return  this;
     }
 
     public String getNote() {
         return note;
     }
 
-    public void setNote(String note) {
+    public Sys_config setNote(String note) {
         this.note = note;
+        return  this;
     }
 }

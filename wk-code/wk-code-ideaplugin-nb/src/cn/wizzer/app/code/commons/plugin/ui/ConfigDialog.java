@@ -91,10 +91,10 @@ public class ConfigDialog extends DialogWrapper {
         localeCheckBox = new JBCheckBox("locales", true);
 
         forceCheckBox = new JBCheckBox("replace", false);
-        baseModelPathTextField = new JBTextField("wk-app/wk-model");
-        baseComPathTextField = new JBTextField("wk-app/wk-common");
-        baseNbPathTextField = new JBTextField("wk-app/wk-nb-service-" + modelUriName);
-        basePathTextField = new JBTextField("wk-app/wk-nb-web-vue");
+        baseModelPathTextField = new JBTextField("lq-app/lq-model");
+        baseComPathTextField = new JBTextField("lq-app/lq-common");
+        baseNbPathTextField = new JBTextField("lq-app/lq-service-" + modelUriName);
+        basePathTextField = new JBTextField("lq-app/lq-web-vue");
         baseUriTextField = new JBTextField(baseUri);
         basePackageTextField = new JBTextField(basePackage);
         baseModelPathLabel = new JBLabel("base model Path:");
@@ -144,9 +144,9 @@ public class ConfigDialog extends DialogWrapper {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (vueCheckBox.isSelected()) {
-                    basePathTextField.setText("wk-app/wk-nb-web-vue");
+                    basePathTextField.setText("lq-app/lq-web-vue");
                 } else {
-                    basePathTextField.setText("wk-app/wk-nb-web-platform");
+                    basePathTextField.setText("lq-app/lq-web-platform");
                 }
             }
         });

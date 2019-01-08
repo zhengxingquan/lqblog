@@ -1,18 +1,14 @@
 package cn.demo.app.wx.commons.core;
 
+import cn.demo.app.utils.InitSysMenusUtil;
 import org.nutz.boot.NbApp;
 import org.nutz.dao.Dao;
 import org.nutz.dao.util.Daos;
 import org.nutz.ioc.loader.annotation.Inject;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.annotation.Modules;
-
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.util.Enumeration;
 
 /**
  * Created by wizzer on 2018/3/17.
@@ -24,6 +20,11 @@ public class DubboRpcWxMainLauncher {
 
     @Inject
     private Dao dao;
+
+    /**
+     *初始化 系统配置表配置
+     */
+    private InitSysMenusUtil initSysMenusUtil = new InitSysMenusUtil();
 
     public static void main(String[] args) throws Exception {
         NbApp nb = new NbApp().setArgs(args).setPrintProcDoc(true);
@@ -42,22 +43,6 @@ public class DubboRpcWxMainLauncher {
     }
 
     public void depose() {
-        // 非mysql数据库,或多webapp共享mysql驱动的话,以下语句删掉
-        try {
-            Mirror.me(Class.forName("com.mysql.jdbc.AbandonedConnectionCleanupThread")).invoke(null, "shutdown");
-        } catch (Throwable e) {
-        }
-        // 解决com.alibaba.druid.proxy.DruidDriver和com.mysql.jdbc.Driver在reload时报warning的问题
-        // 多webapp共享mysql驱动的话,以下语句删掉
-        Enumeration<Driver> en = DriverManager.getDrivers();
-        while (en.hasMoreElements()) {
-            try {
-                Driver driver = en.nextElement();
-                String className = driver.getClass().getName();
-                log.debug("deregisterDriver: " + className);
-                DriverManager.deregisterDriver(driver);
-            } catch (Exception e) {
-            }
-        }
+        initSysMenusUtil.depose();
     }
 }

@@ -93,6 +93,11 @@ public class Sys_menu extends BaseModel implements Serializable {
     @Comment("有子节点")
     private boolean hasChildren;
 
+    /**
+     * 通过权限表示自动判断子父节点
+     */
+    private String parentPermission;
+
     private List<Sys_menu> buttons;
 
     public String getId() {
@@ -221,5 +226,13 @@ public class Sys_menu extends BaseModel implements Serializable {
 
     public void setButtons(List<Sys_menu> buttons) {
         this.buttons = buttons;
+    }
+
+    public String getParentPermission() {
+        return parentPermission;
+    }
+
+    public void setParentPermission(String parentPermission) {
+        this.parentPermission = parentPermission;
     }
 }

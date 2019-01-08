@@ -1,5 +1,6 @@
 package cn.demo.app.web.modules.controllers.open.file;
 
+import cn.demo.app.sys.modules.models.Sys_file;
 import cn.demo.app.web.commons.base.Globals;
 import cn.demo.app.web.commons.utils.DateUtil;
 import cn.demo.framework.base.Result;
@@ -41,6 +42,7 @@ public class UploadController {
             } else if (tf == null) {
                 return Result.error("file.empty");
             } else {
+                Sys_file sys_file = new Sys_file();
                 String s = tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf(".") + 1);
                 String uri = "/file/" + DateUtil.format(new Date(), "yyyyMMdd") + "/" + R.UU32() + tf.getSubmittedFileName().substring(tf.getSubmittedFileName().indexOf("."));
                 String f = Globals.AppUploadPath + uri;
