@@ -50,6 +50,8 @@ public class TaskMainLauncher {
         nb.run();
     }
 
+
+
     public void init() {
         if (!dao.exists("sys_qrtz_triggers")) {
             //执行Quartz SQL脚本
